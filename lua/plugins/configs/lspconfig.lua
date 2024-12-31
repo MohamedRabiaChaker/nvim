@@ -39,6 +39,16 @@ M.capabilities.textDocument.completion.completionItem = {
     },
   },
 }
+M.capabilities.textDocument.foldingRange = {
+  dynamicRegistration = false,
+  lineFoldingOnly = true,
+}
+vim.o.foldcolumn = "1" -- '0' is not bad
+vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+vim.o.foldlevelstart = 99
+vim.o.foldenable = true
+
+require("ufo").setup()
 
 require("lspconfig").lua_ls.setup {
   on_init = M.on_init,
@@ -47,9 +57,7 @@ require("lspconfig").lua_ls.setup {
 
   settings = {
     Lua = {
-      diagnostics = {
-        globals = { "vim" },
-      },
+      diagnostics = { globals = { "vim" } },
       workspace = {
         library = {
           [vim.fn.expand "$VIMRUNTIME/lua"] = true,
