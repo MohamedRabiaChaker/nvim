@@ -49,8 +49,9 @@ vim.o.foldlevelstart = 99
 vim.o.foldenable = true
 
 require("ufo").setup()
-
-require("lspconfig").lua_ls.setup {
+--- LANGUAGE SERVERS
+local lsp_config = require "lspconfig"
+lsp_config.lua_ls.setup {
   on_init = M.on_init,
   on_attach = M.on_attach,
   capabilities = M.capabilities,
@@ -72,4 +73,49 @@ require("lspconfig").lua_ls.setup {
   },
 }
 
+lsp_config.ts_ls.setup {
+  root_dir = function(...)
+    return require("lspconfig.util").root_pattern ".git"(...)
+  end,
+  single_file_support = false,
+  settings = {
+    typescript = {
+      inlayHints = {
+        includeInlayParameterNameHints = "literal",
+        includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+        includeInlayFunctionParameterTypeHints = true,
+        includeInlayVariableTypeHints = false,
+        includeInlayPropertyDeclarationTypeHints = true,
+        includeInlayFunctionLikeReturnTypeHints = true,
+        includeInlayEnumMemberValueHints = true,
+      },
+    },
+    javascript = {
+      inlayHints = {
+        includeInlayParameterNameHints = "all",
+        includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+        includeInlayFunctionParameterTypeHints = true,
+        includeInlayVariableTypeHints = true,
+        includeInlayPropertyDeclarationTypeHints = true,
+        includeInlayFunctionLikeReturnTypeHints = true,
+        includeInlayEnumMemberValueHints = true,
+      },
+    },
+  },
+}
+
+lsp_config.html.setup {}
+lsp_config.cssls.setup {}
+lsp_config.tailwindcss.setup {
+  root_dir = function(...)
+    return require("lspconfig.util").root_pattern ".git"(...)
+  end,
+}
+
+require("cmp").setup {
+  sources = {
+    { name = "nvim_lsp" },
+    -- other sources
+  },
+}
 return M
